@@ -1,9 +1,9 @@
 {
   "description": "Panel feature to conveniently manage block files.",
   "license": "GPL-3.0-or-later",
-  "name": "mecha-cms/x.panel.comment",
+  "name": "mecha-cms/x.panel.block",
   "require": {
-    "mecha-cms/x.comment": "^2.0.0",
+    "mecha-cms/x.block": "^2.0.0",
     "mecha-cms/x.panel": "^3.0.0"
   }
 }
