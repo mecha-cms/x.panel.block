@@ -31,7 +31,7 @@ Hook::set('_', function ($_) {
     if (0 === strpos($_['path'] . '/', 'block/')) {
         if (0 === strpos($_['type'] . '/', 'file/block/')) {
             if (isset($_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['file']['lot']['fields']['lot']['name'])) {
-                $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['file']['lot']['fields']['lot']['name']['value-after'] = '.php';
+                $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['file']['lot']['fields']['lot']['name']['gist'] = ["", '.php'];
                 $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['file']['lot']['fields']['lot']['name']['x'] = false;
                 if ('get' === $_['task'] && isset($_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['file']['lot']['fields']['lot']['name']['value'])) {
                     $_['lot']['bar']['lot'][0]['lot']['set']['description'][1] = 'Block';
