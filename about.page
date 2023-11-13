@@ -5,8 +5,8 @@ icon: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A
 color: '#84336f'
 image: /lot/x/panel.block/index.png
 images:
-  - /lot/x/panel.block/index.png
-  - /lot/x/panel.block/index/1.png
+- /lot/x/panel.block/index.png
+- /lot/x/panel.block/index/1.png
 author: Taufik Nurrohman
 type: Markdown
 version: 1.0.0
