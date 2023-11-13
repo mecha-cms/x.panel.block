@@ -6,8 +6,12 @@ namespace {
         return $_;
     }
     if ('POST' === $_SERVER['REQUEST_METHOD'] && 0 === \strpos($_['path'] . '/', 'block/') && 0 === \strpos($_['type'] . '/', 'file/block/')) {
-        // Force `.php` file extension
-        if (isset($_POST['file']['name'])) {
+        if ($name = $_POST['file']['name'] ?? "") {
+            // Check if block already exists as a hook
+            if (\Hook::get('block.' . $name)) {
+                $_['alert']['error'][] = ['Block %s already exists as a hook.', '<code>[[' . $name . ']]</code>'];
+            }
+            // Force `.php` file extension
             $_POST['file']['name'] .= '.php';
         }
     }
@@ -49,8 +53,8 @@ namespace x\panel__block {
             $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['file']['lot']['fields']['lot']['content']['value'] = '<?' . 'php
 
 return function ($content, $lot) {
-    // `$content` holds the literal block string.
-    // `$lot` holds the parsed block data where the first data is the block name, the second data is the block content and the third data is the block attributes.
+    // `$content` is the string of the literal block.
+    // `$lot` is the data of the parsed block, where the first data is the name of the block, the second data is the content of the block, and the third data is the attributes of the block.
     // `$this` refers to the current `$page` variable.
 };';
         }
@@ -72,15 +76,36 @@ namespace x\panel__block\_ {
         if (
             !empty($_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['lot']) &&
             !empty($_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['type']) &&
-            'files' === $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['type']
+            0 === \strpos($_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['type'] . '/', 'files/')
         ) {
+            $hooks = \Hook::get();
             foreach ($_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['lot'] as $k => &$v) {
+                $n = \basename($k, '.php');
                 $v['is']['file'] = false;
                 $v['is']['folder'] = false;
                 $v['tags']['code'] = true;
-                $v['title'] = '[[' . \basename($k, '.php') . ']]';
+                $v['title'] = '[[' . $n . ']]';
+                unset($hooks['block.' . $n]);
             }
             unset($v);
+        }
+        if ($hooks) {
+            foreach ($hooks as $k => $v) {
+                if (0 !== \strpos($k, 'block.')) {
+                    continue;
+                }
+                $n = \substr($k, 6);
+                $stack = 1000;
+                $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['lot']['#' . $n] = [
+                    'is' => [
+                        'file' => false,
+                        'folder' => false
+                    ],
+                    'stack' => ($stack = $stack += 0.1),
+                    'tags' => ['code' => true],
+                    'title' => '[[' . $n . ']]'
+                ];
+            }
         }
         return $_;
     }
