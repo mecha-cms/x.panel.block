@@ -83,6 +83,7 @@ namespace x\panel__block\_ {
                 $n = \basename($k, '.php');
                 $v['is']['file'] = false;
                 $v['is']['folder'] = false;
+                $v['link'] = $v['url'] = false;
                 $v['tags']['code'] = true;
                 $v['title'] = '[[' . $n . ']]';
                 unset($hooks['block.' . $n]);
@@ -95,15 +96,52 @@ namespace x\panel__block\_ {
                     continue;
                 }
                 $n = \substr($k, 6);
+                $page = new \Page;
+                $skip = true;
                 $stack = 1000;
+                if (\is_file($file = __DIR__ . \D . '..' . \D . '..' . \D . 'block.' . $n . \D . 'index.php')) {
+                    $skip = false;
+                    // Prioritize name from the `composer.json` file
+                    if (\is_file($file_composer = \dirname($file) . \D . 'composer.json')) {
+                        $composer = \json_decode(\file_get_contents($file_composer));
+                        $page = new \Page(null, [
+                            'title' => $composer->name ?? ""
+                        ]);
+                    } else if (\is_file($file_about = \dirname($file) . \D . 'about.page')) {
+                        $page = new \Page($file_about);
+                    }
+                }
                 $_['lot']['desk']['lot']['form']['lot'][1]['lot']['tabs']['lot']['files']['lot']['files']['lot']['#' . $n] = [
                     'is' => [
                         'file' => false,
                         'folder' => false
                     ],
+                    'link' => $link = [
+                        'hash' => null,
+                        'part' => 1,
+                        'path' => 'x/' . \basename(\dirname($page->path ?? $file)),
+                        'query' => \x\panel\_query_set(['tab' => ['info']]),
+                        'task' => 'get'
+                    ],
+                    'skip' => $skip,
                     'stack' => ($stack = $stack += 0.1),
                     'tags' => ['code' => true],
-                    'title' => '[[' . $n . ']]'
+                    'tasks' => [
+                        'link' => [
+                            'description' => ['Refer to the %s extension', '&#x201c;' . ($page->title ?? \basename(\dirname($file))) . '&#x201d;'],
+                            'icon' => 'M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z',
+                            'link' => $link,
+                            'stack' => 10,
+                            'title' => 'Link'
+                        ],
+                        'let' => [
+                            'active' => false,
+                            'icon' => 'M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z',
+                            'stack' => 20,
+                        ]
+                    ],
+                    'title' => '[[' . $n . ']]',
+                    'url' => false
                 ];
             }
         }
